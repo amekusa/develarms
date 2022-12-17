@@ -1,14 +1,28 @@
-#!/usr/bin/env node
+'use strict';
 
-/*!
- * develarms
- * @author Satoshi Soma (https://github.com/amekusa)
- */
+var fs = require('node:fs');
+var process = require('node:process');
+var cp = require('node:child_process');
+var satisfies = require('semver/functions/satisfies');
 
-import * as fs from 'node:fs';
-import process from 'node:process';
-import cp from 'node:child_process';
-import satisfies from 'semver/functions/satisfies';
+function _interopNamespaceDefault(e) {
+	var n = Object.create(null);
+	if (e) {
+		Object.keys(e).forEach(function (k) {
+			if (k !== 'default') {
+				var d = Object.getOwnPropertyDescriptor(e, k);
+				Object.defineProperty(n, k, d.get ? d : {
+					enumerable: true,
+					get: function () { return e[k]; }
+				});
+			}
+		});
+	}
+	n.default = e;
+	return Object.freeze(n);
+}
+
+var fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
 
 // options
 const opts = {
@@ -43,7 +57,7 @@ for (let i = 0; i < args.length; i++) {
 }
 
 function main() {
-	let config = JSON.parse(fs.readFileSync(opts.config.file));
+	let config = JSON.parse(fs__namespace.readFileSync(opts.config.file));
 	if (!(opts.config.key in config)) throw new Error(`Config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
 	let deps = {};
@@ -91,11 +105,11 @@ async function resolveDeps(deps) {
 		// locals
 		exec(`npm ls ${names.join(' ')} --json --depth=0`).then(out => {
 			l = JSON.parse(out).dependencies || {};
-		}).catch(() => { l = {} }),
+		}).catch(() => { l = {}; }),
 		// globals
 		exec(`npm ls -g ${names.join(' ')} --json --depth=0`).then(out => {
 			g = JSON.parse(out).dependencies || {};
-		}).catch(() => { g = {} })
+		}).catch(() => { g = {}; })
 	]);
 	let exist = Object.assign(g, l);
 	console.log(`Existent dependencies:`, exist);
@@ -127,9 +141,10 @@ async function resolveDeps(deps) {
 		console.log(`All the dependencies have been resolved.`);
 
 	}).catch(e => {
-		console.error(e)
+		console.error(e);
 		throw new Error(`Installation failed.`);
 	});
 }
 
 main();
+//# sourceMappingURL=index.cjs.map

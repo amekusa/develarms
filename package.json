@@ -4,8 +4,14 @@
   "version": "0.1.0",
   "description": "Better devDependencies resolver",
   "main": "index.js",
+  "exports": {
+    "import": "./index.js",
+    "require": "./index.cjs"
+  },
   "files": [
-    "index.js"
+    "index.js",
+    "index.cjs",
+    "index.cjs.map"
   ],
   "bin": {
     "develarms": "index.js"

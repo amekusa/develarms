@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "develarms",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Better devDependencies resolver",
   "main": "index.js",
   "exports": {

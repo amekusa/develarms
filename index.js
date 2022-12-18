@@ -37,7 +37,7 @@ Options:
     * Alias:   -c
 
   --config-key <key>
-    Specifies key of config object key
+    Specifies key of config object
     * Default: develarms
     * Alias:   --configKey
 `);

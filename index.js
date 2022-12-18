@@ -39,7 +39,7 @@ Options:
   --config-key <key>
     Specifies key of config object key
     * Default: develarms
-    * Alias:   -configKey
+    * Alias:   --configKey
 `);
 		process.exit(0);
 	case '-n':

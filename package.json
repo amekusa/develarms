@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "develarms",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Alternative devDependencies resolver",
   "main": "index.js",
   "files": [

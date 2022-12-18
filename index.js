@@ -85,7 +85,7 @@ function warn(msg) {
 function main() {
 	let config;
 	try { config = JSON.parse(fs.readFileSync(opts.config.file)); } catch (e) { error(e.message); }
-	if (!(opts.config.key in config)) error(`Config key '${opts.config.key}' not found in ${opts.config.file}`);
+	if (!(opts.config.key in config)) error(`config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
 	let deps = {};
 	let keys = [
@@ -166,7 +166,7 @@ async function resolveDeps(deps) {
 		console.log(`All the dependencies have been resolved.`);
 
 	}).catch(e => {
-		error(e)
+		error(e);
 	});
 }
 

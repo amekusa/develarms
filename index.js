@@ -10,6 +10,8 @@ import process from 'node:process';
 import cp from 'node:child_process';
 import semver from 'semver';
 
+const version = '1.0.0';
+
 // options
 const opts = {
 	dryRun: '',
@@ -47,7 +49,9 @@ for (let i = 0; i < args.length; i++) {
 }
 
 function help() {
-	console.log(`
+	console.log(
+`develarms ${version}
+
 Options:
   --dry-run
     Does not actually install the dependencies
@@ -62,7 +66,11 @@ Options:
     Specifies key of config object
     * Default: develarms
     * Alias:   --configKey
-`);
+
+  --help
+    Shows this
+    * Alias:   -h`
+	);
 }
 
 function error(msg) {

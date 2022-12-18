@@ -2,16 +2,10 @@
   "type": "module",
   "name": "develarms",
   "version": "0.2.0",
-  "description": "Better devDependencies resolver",
+  "description": "Alternative devDependencies resolver",
   "main": "index.js",
-  "exports": {
-    "import": "./index.js",
-    "require": "./index.cjs"
-  },
   "files": [
-    "index.js",
-    "index.cjs",
-    "index.cjs.map"
+    "index.js"
   ],
   "bin": {
     "develarms": "index.js"

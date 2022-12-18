@@ -8,7 +8,7 @@
 import * as fs from 'node:fs';
 import process from 'node:process';
 import cp from 'node:child_process';
-import satisfies from 'semver/functions/satisfies';
+import semver from 'semver';
 
 // options
 const opts = {
@@ -109,7 +109,6 @@ async function resolveDeps(deps) {
 			console.warn(`The dependency '${i}' is skipped due to a lack of 'version' info.`);
 			continue;
 		}
-		if (i in exist && satisfies(exist[i].version, I.version)) {
 			console.log(`You have already had a sufficient version of '${i}'.`, `\n - Existent: ${exist[i].version}`, `\n - Required: ${I.version}`);
 			continue;
 		}

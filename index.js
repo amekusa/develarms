@@ -23,6 +23,25 @@ const opts = {
 let args = process.argv.slice(2);
 for (let i = 0; i < args.length; i++) {
 	switch (args[i]) {
+	case '-h':
+	case '--help':
+		console.log(`
+Options:
+  --dry-run
+    Does not actually install the dependencies
+    * Aliases: -n, --dryRun
+
+  --config <file>
+    Specifies JSON file
+    * Default: package.json
+    * Alias:   -c
+
+  --config-key <key>
+    Specifies key of config object key
+    * Default: develarms
+    * Alias:   -configKey
+`);
+		process.exit(0);
 	case '-n':
 	case '--dryRun':
 	case '--dry-run':
@@ -109,6 +128,7 @@ async function resolveDeps(deps) {
 			console.warn(`The dependency '${i}' is skipped due to a lack of 'version' info.`);
 			continue;
 		}
+		if (i in exist && semver.satisfies(exist[i].version, I.version)) {
 			console.log(`You have already had a sufficient version of '${i}'.`, `\n - Existent: ${exist[i].version}`, `\n - Required: ${I.version}`);
 			continue;
 		}

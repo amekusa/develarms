@@ -83,7 +83,8 @@ function warn(msg) {
 }
 
 function main() {
-	let config = JSON.parse(fs.readFileSync(opts.config.file));
+	let config;
+	try { config = JSON.parse(fs.readFileSync(opts.config.file)); } catch (e) { error(e.message); }
 	if (!(opts.config.key in config)) error(`Config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
 	let deps = {};

@@ -25,22 +25,7 @@ for (let i = 0; i < args.length; i++) {
 	switch (args[i]) {
 	case '-h':
 	case '--help':
-		console.log(`
-Options:
-  --dry-run
-    Does not actually install the dependencies
-    * Aliases: -n, --dryRun
-
-  --config <file>
-    Specifies JSON file
-    * Default: package.json
-    * Alias:   -c
-
-  --config-key <key>
-    Specifies key of config object
-    * Default: develarms
-    * Alias:   --configKey
-`);
+		help();
 		process.exit(0);
 	case '-n':
 	case '--dryRun':
@@ -61,9 +46,37 @@ Options:
 	}
 }
 
+function help() {
+	console.log(`
+Options:
+  --dry-run
+    Does not actually install the dependencies
+    * Aliases: -n, --dryRun
+
+  --config <file>
+    Specifies JSON file
+    * Default: package.json
+    * Alias:   -c
+
+  --config-key <key>
+    Specifies key of config object
+    * Default: develarms
+    * Alias:   --configKey
+`);
+}
+
+function error(msg) {
+	console.error(`[${RED('ERROR')}]`, msg);
+	process.exit(1);
+}
+
+function warn(msg) {
+	console.warn(`[${ylw('WARN')}]`, msg);
+}
+
 function main() {
 	let config = JSON.parse(fs.readFileSync(opts.config.file));
-	if (!(opts.config.key in config)) throw new Error(`Config key '${opts.config.key}' not found in ${opts.config.file}`);
+	if (!(opts.config.key in config)) error(`Config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
 	let deps = {};
 	let keys = [
@@ -78,11 +91,9 @@ function main() {
 		deps = Object.assign(deps, config[keys[i]]);
 	}
 	resolveDeps(deps).then(() => {
-		console.log(`Setup complete.`);
+		console.log(`${grn('Setup complete.')}`);
 	}).catch(e => {
-		console.error(e);
-		console.error(`Setup failed.`);
-		process.exit(1);
+		error(e);
 	});
 }
 
@@ -129,7 +140,7 @@ async function resolveDeps(deps) {
 			continue;
 		}
 		if (i in exist && semver.satisfies(exist[i].version, I.version)) {
-			console.log(`You have already had a sufficient version of '${i}'.`, `\n - Existent: ${exist[i].version}`, `\n - Required: ${I.version}`);
+			console.log(`You have already installed a sufficient version of '${i}'.`, `\n - Existent: ${exist[i].version}`, `\n - Required: ${I.version}`);
 			continue;
 		}
 		installs.push(i+'@'+I.version);
@@ -146,9 +157,35 @@ async function resolveDeps(deps) {
 		console.log(`All the dependencies have been resolved.`);
 
 	}).catch(e => {
-		console.error(e)
-		throw new Error(`Installation failed.`);
+		error(e)
 	});
+}
+
+const ESC = '\x1b[';
+const RST = `${ESC}0m`;
+
+function red(str) {
+	return `${ESC}0;31m${str}${RST}`;
+}
+
+function RED(str) {
+	return `${ESC}1;31m${str}${RST}`;
+}
+
+function grn(str) {
+	return `${ESC}0;32m${str}${RST}`;
+}
+
+function GRN(str) {
+	return `${ESC}1;32m${str}${RST}`;
+}
+
+function ylw(str) {
+	return `${ESC}0;33m${str}${RST}`;
+}
+
+function YLW(str) {
+	return `${ESC}1;33m${str}${RST}`;
 }
 
 main();

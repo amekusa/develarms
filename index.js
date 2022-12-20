@@ -10,7 +10,7 @@ import process from 'node:process';
 import cp from 'node:child_process';
 import semver from 'semver';
 
-const version = '1.2.0';
+const version = '1.2.1';
 
 // options
 const opts = {

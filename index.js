@@ -14,7 +14,8 @@ const version = '1.1.0';
 
 // options
 const opts = {
-	dryRun: '',
+	dryRun: false,
+	global: false,
 	config: {
 		file: 'package.json',
 		key: 'develarms'
@@ -32,7 +33,11 @@ for (let i = 0; i < args.length; i++) {
 	case '-n':
 	case '--dryRun':
 	case '--dry-run':
-		opts.dryRun = ' --dry-run';
+		opts.dryRun = true;
+		continue;
+	case '-g':
+	case '--global':
+		opts.global = true;
 		continue;
 	}
 	if ((i + 1) == args.length) break;
@@ -57,6 +62,10 @@ Options:
     Does not actually install the dependencies
     * Aliases: -n, --dryRun
 
+  --global
+    Installs the dependencies globally
+    * Alias:   -g
+
   --config <file>
     Specifies JSON file
     * Default: package.json
@@ -69,24 +78,17 @@ Options:
 
   --help
     Shows this
-    * Alias:   -h`
+    * Alias:   -h
+`
 	);
-}
-
-function error(msg) {
-	console.error(`[${RED('ERROR')}]`, msg);
-	process.exit(1);
-}
-
-function warn(msg) {
-	console.warn(`[${ylw('WARN')}]`, msg);
 }
 
 function main() {
 	let config;
-	try { config = JSON.parse(fs.readFileSync(opts.config.file)); } catch (e) { error(e.message); }
+	try { config = JSON.parse(fs.readFileSync(opts.config.file)) } catch (e) { error(e.message) }
 	if (!(opts.config.key in config)) error(`config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
+	if (!opts.global && get('global', config)) opts.global = config.global;
 	let deps = {};
 	let keys = [
 		'pkgs',
@@ -103,16 +105,6 @@ function main() {
 		console.log(`${grn('Setup complete.')}`);
 	}).catch(e => {
 		error(e);
-	});
-}
-
-function exec(cmd) {
-	return new Promise((resolve, reject) => {
-		console.log(`[exec]`, cmd);
-		cp.exec(cmd, {}, function(err, out) {
-			if (!err) return resolve(out);
-			return reject(err);
-		});
 	});
 }
 
@@ -161,7 +153,10 @@ async function resolveDeps(deps) {
 
 	// install packages
 	console.log(`Installing ${installs.join(', ')} ...`);
-	return exec(`npm i --no-save${opts.dryRun} ${installs.join(' ')}`).then(() => {
+	let args = '';
+	if (opts.dryRun) args += ' --dry-run';
+	if (opts.global) args += ' --global';
+	return exec(`npm i --no-save${args} ${installs.join(' ')}`).then(() => {
 		console.log(`Installation complete.`);
 		console.log(`All the dependencies have been resolved.`);
 
@@ -169,6 +164,37 @@ async function resolveDeps(deps) {
 		error(e);
 	});
 }
+
+
+// ---- utils -------- -
+
+function get(key, obj, def = undefined) {
+	if (key in obj) return obj[key];
+	obj[key] = def;
+	return def;
+}
+
+function error(msg) {
+	console.error(`[${RED('ERROR')}]`, msg);
+	process.exit(1);
+}
+
+function warn(msg) {
+	console.warn(`[${ylw('WARN')}]`, msg);
+}
+
+function exec(cmd) {
+	return new Promise((resolve, reject) => {
+		console.log(`[exec]`, cmd);
+		cp.exec(cmd, {}, function(err, out) {
+			if (!err) return resolve(out);
+			return reject(err);
+		});
+	});
+}
+
+
+// ---- color utils -------- -
 
 const ESC = '\x1b[';
 const RST = `${ESC}0m`;

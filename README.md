@@ -1,6 +1,8 @@
-# DEVELARMS [![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
-
+# ![DEVELARMS](logo.png)
 Alternative `devDependencies` resolver
+
+[![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
+
 
 ## Installation
 
@@ -71,7 +73,7 @@ The `--global` option can be set in JSON as well.
 {
   "develarms": {
     "global": true,
-    "dependencies": { ... }
+    "dependencies": {}
   }
 }
 ```

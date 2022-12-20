@@ -5,7 +5,8 @@
   "description": "Alternative devDependencies resolver",
   "main": "index.js",
   "files": [
-    "index.js"
+    "index.js",
+    "logo.png"
   ],
   "bin": {
     "develarms": "index.js"

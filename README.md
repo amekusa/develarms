@@ -1,4 +1,5 @@
-# DEVELARMS
+# DEVELARMS [![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
+
 Alternative `devDependencies` resolver
 
 ## Installation
@@ -49,6 +50,10 @@ Options:
     Does not actually install the dependencies
     * Aliases: -n, --dryRun
 
+  --global
+    Installs the dependencies globally
+    * Alias:   -g
+
   --config <file>
     Specifies JSON file
     * Default: package.json
@@ -58,6 +63,17 @@ Options:
     Specifies key of config object
     * Default: develarms
     * Alias:   --configKey
+```
+
+The `--global` option can be set in JSON as well.
+
+```json
+{
+  "develarms": {
+    "global": true,
+    "dependencies": { ... }
+  }
+}
 ```
 
 ---

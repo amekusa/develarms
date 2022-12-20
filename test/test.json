@@ -1,0 +1,8 @@
+{
+  "develarms": {
+    "dependencies": {
+      "nyc": "*",
+      "webpack": "*"
+    }
+  }
+}

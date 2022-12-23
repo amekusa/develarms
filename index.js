@@ -88,7 +88,6 @@ function main() {
 	try { config = JSON.parse(fs.readFileSync(opts.config.file)) } catch (e) { error(e.message) }
 	if (!(opts.config.key in config)) error(`config key '${opts.config.key}' not found in ${opts.config.file}`);
 	config = config[opts.config.key];
-	if (!opts.global && get('global', config)) opts.global = config.global;
 	let deps = {};
 	let keys = [
 		'pkgs',

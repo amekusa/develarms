@@ -125,7 +125,7 @@ async function resolveDeps(deps) {
 	let args = '';
 	if (options.dryRun) args += ' --dry-run';
 	if (options.global) args += ' --global';
-	return exec(`npm i --no-save${args} ${installs.join(' ')}`).then(() => {
+	return exec(`npm install --no-save${args} ${installs.join(' ')}`).then(() => {
 		log(`Installation complete.`);
 		log(`All the dependencies have been resolved.`);
 

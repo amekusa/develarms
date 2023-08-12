@@ -47,7 +47,9 @@ function main() {
 		.option('-v, --verbose', 'Output detailed messages for debug')
 		.version(version);
 
-	cmd.command('install').alias('i')
+	cmd.command('install')
+		.alias('i')
+		.alias('add')
 		.description('Installs dependencies')
 		.argument('[packages...]', '(Optional) Packages to add to deps')
 		.option('-g, --global', 'Installs the packages globally')

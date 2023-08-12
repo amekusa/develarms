@@ -74,7 +74,7 @@ async function install(pkgs = []) {
 		config.assign({ [options.configKey]: installs });
 		config.save();
 	}
-	await resolveDeps(config.data[options.configKey] || {});
+	return resolveDeps(config.data[options.configKey] || {});
 }
 
 async function resolveDeps(deps) {

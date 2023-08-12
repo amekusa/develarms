@@ -83,37 +83,38 @@ async function resolveDeps(deps) {
 	log(`Resolving dependencies:`, deps, `...`);
 
 	// Populate existing packages
-	let l, g; await Promise.all([
+	let exist = {}; await Promise.all([
 		// Locals
 		exec(`npm ls ${names.join(' ')} --json --depth=0`).then(out => {
-			l = JSON.parse(out).dependencies || {};
+			exist.local = JSON.parse(out).dependencies || {};
 		}).catch(() => {
-			l = {};
+			exist.local = {};
 		}),
 		// Globals
 		exec(`npm ls -g ${names.join(' ')} --json --depth=0`).then(out => {
-			g = JSON.parse(out).dependencies || {};
+			exist.global = JSON.parse(out).dependencies || {};
 		}).catch(() => {
-			g = {};
+			exist.global = {};
 		})
 	]);
-	let exist = Object.assign(g, l);
-	if (Object.keys(exist).length) log(`Existing dependencies:`, exist);
+	log(`Existing dependencies:`, exist);
 
 	// Calculate which packages should be installed
 	let installs = [];
-	for (let i in deps) {
+	LOOP1: for (let i in deps) {
 		let item = deps[i];
 		if (typeof item == 'string') item = { version: item }; // Support one-liner
 		if (!item.version) {
 			warn(`ignored dependency '${i}' due to a lack of 'version' info`);
 			continue;
 		}
-		if (i in exist && semver.satisfies(exist[i].version, item.version)) {
-			log(`You have already installed a sufficient version of '${i}'.`);
-			log(` - Existing: ${exist[i].version}`);
-			log(` - Required: ${item.version}`);
-			continue;
+		for (let scope in exist) {
+			if (i in exist[scope] && semver.satisfies(exist[scope][i].version, item.version)) {
+				log(`You already have a sufficient version of '${i}' in ${scope}.`);
+				log(` - Existing: ${exist[scope][i].version}`);
+				log(` - Required: ${item.version}`);
+				continue LOOP1;
+			}
 		}
 		installs.push(i+'@'+item.version);
 	}

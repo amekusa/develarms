@@ -128,10 +128,9 @@ async function resolveDeps(deps) {
 	return exec(`npm install --no-save${args} ${installs.join(' ')}`).then(() => {
 		log(`Installation complete.`);
 		log(`All the dependencies have been resolved.`);
+	}).catch(error);
+}
 
-	}).catch(e => {
-		error(e);
-	});
 }
 
 

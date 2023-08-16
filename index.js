@@ -36,6 +36,9 @@ function main() {
 		case 'install':
 			install(args);
 			break;
+		case 'uninstall':
+			uninstall(args);
+			break;
 		}
 	};
 
@@ -54,6 +57,12 @@ function main() {
 		.argument('[packages...]', '(Optional) Packages to add to deps')
 		.option('-g, --global', 'Installs the packages globally')
 		.action(pkgs => { action('install', pkgs) });
+
+	cmd.command('uninstall')
+		.alias('rm')
+		.description('Uninstalls dependencies')
+		.argument('<packages...>', 'Packages to remove from deps')
+		.action(pkgs => { action('uninstall', pkgs) });
 
 	cmd.parse();
 }
@@ -131,6 +140,24 @@ async function resolveDeps(deps) {
 	}).catch(error);
 }
 
+async function uninstall(pkgs) {
+	let deps = config.get(options.configKey, {});
+	let uninstalls = [];
+	for (let item of pkgs) {
+		if (item in deps) uninstalls.push(item);
+		else warn(`ignored '${item}' since it is not listed in the config`);
+	}
+	if (!uninstalls.length) return log(`Nothing to uninstall.`);
+	let args = '';
+	if (options.dryRun) args += ' --dry-run';
+	return exec(`npm uninstall --no-save${args} ${uninstalls.join(' ')}`).then(() => {
+		let deps = config.sync().get(options.configKey, {});
+		for (let item of uninstalls) {
+			if (item in deps) delete deps[item];
+		}
+		config.save();
+		log(`Uninstallation complete.`);
+	}).catch(error);
 }
 
 

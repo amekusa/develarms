@@ -179,11 +179,11 @@ function warn(...msg) {
 }
 
 function debug(...msg) {
-	if (options.verbose) console.debug(`[${grn('INFO')}]`, ...msg);
+	if (options.verbose) console.debug(`[${cyn('INFO')}]`, ...msg);
 }
 
 function dryRun(fn, ...msg) {
-	if (options.dryRun) console.debug(`[${ylw('DRYRUN')}]`, ...msg);
+	if (options.dryRun) console.debug(`[${mag('DRYRUN')}]`, ...msg);
 	else return fn();
 }
 
@@ -260,28 +260,16 @@ class Config {
 const ESC = '\x1b[';
 const RST = `${ESC}0m`;
 
-function red(str) {
-	return `${ESC}0;31m${str}${RST}`;
-}
+function red(str) { return `${ESC}0;31m${str}${RST}` }
+function RED(str) { return `${ESC}1;31m${str}${RST}` }
+function grn(str) { return `${ESC}0;32m${str}${RST}` }
+function GRN(str) { return `${ESC}1;32m${str}${RST}` }
+function ylw(str) { return `${ESC}0;33m${str}${RST}` }
+function YLW(str) { return `${ESC}1;33m${str}${RST}` }
+function mag(str) { return `${ESC}0;35m${str}${RST}` }
+function MAG(str) { return `${ESC}1;35m${str}${RST}` }
+function cyn(str) { return `${ESC}0;36m${str}${RST}` }
+function CYN(str) { return `${ESC}1;36m${str}${RST}` }
 
-function RED(str) {
-	return `${ESC}1;31m${str}${RST}`;
-}
-
-function grn(str) {
-	return `${ESC}0;32m${str}${RST}`;
-}
-
-function GRN(str) {
-	return `${ESC}1;32m${str}${RST}`;
-}
-
-function ylw(str) {
-	return `${ESC}0;33m${str}${RST}`;
-}
-
-function YLW(str) {
-	return `${ESC}1;33m${str}${RST}`;
-}
 
 main();

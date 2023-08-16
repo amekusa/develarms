@@ -233,7 +233,6 @@ class Config {
 		this.assign(_data);
 	}
 	save() {
-		this.sync();
 		try {
 			write(this.file, JSON.stringify(this.data, null, 2));
 		} catch (e) { error(e.message) }

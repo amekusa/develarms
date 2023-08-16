@@ -51,6 +51,12 @@ function main() {
 			debug(`config loaded:`, config.data);
 		});
 
+	cmd.command('list')
+		.alias('ls')
+		.description('Lists dependencies')
+		.option('--json', 'Outputs in JSON format')
+		.action(list);
+
 	cmd.command('install')
 		.alias('i')
 		.alias('add')
@@ -66,6 +72,13 @@ function main() {
 		.action(pkgs => { action('uninstall', pkgs) });
 
 	cmd.parse();
+}
+
+function list() {
+	let opts = this.opts();
+	let deps = config.get(options.configKey, {});
+	if (opts.json) return log(JSON.stringify(deps));
+	for (let key in deps) log(`${key}:`, deps[key]);
 }
 
 async function install(pkgs = []) {

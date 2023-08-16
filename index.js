@@ -223,19 +223,23 @@ class Config {
 			loaded = JSON.parse(fs.readFileSync(this.file));
 		} catch (e) { error(e.message) }
 		this.data = loaded;
+		return this;
 	}
 	assign(data) {
 		this.data = merge(this.data, data, 4);
+		return this;
 	}
 	sync() {
 		let _data = this.data;
 		this.load();
 		this.assign(_data);
+		return this;
 	}
 	save() {
 		try {
 			write(this.file, JSON.stringify(this.data, null, 2));
 		} catch (e) { error(e.message) }
+		return this;
 	}
 }
 

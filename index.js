@@ -27,11 +27,6 @@ function main() {
 	let cmd = new Command();
 
 	let action = (name, args) => {
-		options = Object.assign(options, cmd.optsWithGlobals());
-		config = new Config(options.config);
-		config.load();
-		debug(`config loaded:`, config.data);
-
 		switch (name) {
 		case 'install':
 			install(args);
@@ -42,13 +37,19 @@ function main() {
 		}
 	};
 
-	cmd.name('develarms')
+	cmd.name('develarms').version(version)
 		.description('Alternative `devDependency` resolver')
 		.option('-c, --config <file>', 'Config file', 'package.json')
 		.option('-k, --config-key <key>', 'Key of config object', 'develarms')
 		.option('-n, --dry-run', 'Does not actually perform the operation')
 		.option('-v, --verbose', 'Output detailed messages for debug')
-		.version(version);
+		.hook('preSubcommand', cmd => {
+			options = Object.assign(options, cmd.opts());
+			debug('options:', options);
+			config = new Config(options.config);
+			config.load();
+			debug(`config loaded:`, config.data);
+		});
 
 	cmd.command('install')
 		.alias('i')

@@ -72,9 +72,9 @@ async function install(pkgs = []) {
 		}
 		await Promise.all(tasks);
 		config.assign({ [options.configKey]: installs });
-		if (!options.dryRun) config.save();
+		config.sync().save();
 	}
-	return resolveDeps(config.data[options.configKey] || {});
+	return resolveDeps(config.get(options.configKey, {}));
 }
 
 async function resolveDeps(deps) {

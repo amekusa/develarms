@@ -225,6 +225,16 @@ class Config {
 		this.data = loaded;
 		return this;
 	}
+	has(key) {
+		return this.data && (key in this.data);
+	}
+	get(key, fallback = undefined) {
+		return this.has(key) ? this.data[key] : fallback;
+	}
+	set(key, value) {
+		this.data[key] = value;
+		return this;
+	}
 	assign(data) {
 		this.data = merge(this.data, data, 4);
 		return this;

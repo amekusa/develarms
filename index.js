@@ -16,73 +16,67 @@ const version = '1.2.1';
 let options = {
 	dryRun: false,
 	verbose: false,
-	global: false,
 	config: 'package.json',
-	configKey: 'develarms'
+	configKey: 'develarms',
 };
 
 let config;
 
-function main() {
-	let cmd = new Command();
+async function main() {
+	let app = new Command();
 
-	let action = (name, args) => {
-		switch (name) {
-		case 'install':
-			install(args);
-			break;
-		case 'uninstall':
-			uninstall(args);
-			break;
-		}
-	};
-
-	cmd.name('develarms').version(version)
+	app.name('develarms')
+		.version(version)
 		.description('Alternative `devDependency` resolver')
 		.option('-c, --config <file>', 'Config file', 'package.json')
 		.option('-k, --config-key <key>', 'Key of config object', 'develarms')
 		.option('-n, --dry-run', 'Does not actually perform the operation')
 		.option('-v, --verbose', 'Output detailed messages for debug')
-		.hook('preSubcommand', cmd => {
-			options = Object.assign(options, cmd.opts());
+		.hook('preAction', (app, cmd) => {
+			options = Object.assign(options, app.opts());
 			debug('options:', options);
+			debug('command options:', cmd.opts());
 			config = new Config(options.config);
 			config.load();
 			debug(`config loaded:`, config.data);
 		});
 
-	cmd.command('list')
+	app.command('list')
 		.alias('ls')
 		.description('Lists dependencies')
 		.option('--json', 'Outputs in JSON format')
 		.action(list);
 
-	cmd.command('install')
+	app.command('install')
 		.alias('i')
 		.alias('add')
 		.description('Installs dependencies')
 		.argument('[packages...]', '(Optional) Packages to add to deps')
 		.option('-g, --global', 'Installs the packages globally')
-		.action(pkgs => { action('install', pkgs) });
+		.action(install);
 
-	cmd.command('uninstall')
+	app.command('uninstall')
 		.alias('rm')
 		.description('Uninstalls dependencies')
 		.argument('<packages...>', 'Packages to remove from deps')
-		.action(pkgs => { action('uninstall', pkgs) });
+		.action(uninstall);
 
-	cmd.parse();
+	await app.parseAsync();
 }
 
-function list() {
+async function list() {
 	let opts = this.opts();
 	let deps = config.get(options.configKey, {});
 	if (opts.json) return log(JSON.stringify(deps));
 	for (let key in deps) log(`${key}:`, deps[key]);
 }
 
-async function install(pkgs = []) {
-	if (pkgs.length) {
+async function install() {
+	let pkgs = this.args;
+	let opts = this.opts();
+
+	// Add new packages to deps
+	if (pkgs && pkgs.length) {
 		let installs = {};
 		let tasks = [];
 		for (let i = 0; i < pkgs.length; i++) {
@@ -94,27 +88,25 @@ async function install(pkgs = []) {
 			}).catch(error));
 		}
 		await Promise.all(tasks);
-		config.assign({ [options.configKey]: installs });
-		config.sync().save();
+		config.assign({ [options.configKey]: installs }).sync().save();
 	}
-	return resolveDeps(config.get(options.configKey, {}));
-}
 
-async function resolveDeps(deps) {
-	let names = Object.keys(deps);
-	if (!names.length) return warn(`no dependencies`);
+	// Populate deps to resolve
+	let deps = config.get(options.configKey, {});
+	pkgs = Object.keys(deps);
+	if (!pkgs.length) return log(`No dependencies.`);
 	log(`Resolving dependencies:`, deps, `...`);
 
 	// Populate existing packages
 	let exist = {}; await Promise.all([
 		// Locals
-		exec(`npm ls ${names.join(' ')} --json --depth=0`).then(out => {
+		exec(`npm ls ${pkgs.join(' ')} --json --depth=0`).then(out => {
 			exist.local = JSON.parse(out).dependencies || {};
 		}).catch(() => {
 			exist.local = {};
 		}),
 		// Globals
-		exec(`npm ls -g ${names.join(' ')} --json --depth=0`).then(out => {
+		exec(`npm ls -g ${pkgs.join(' ')} --json --depth=0`).then(out => {
 			exist.global = JSON.parse(out).dependencies || {};
 		}).catch(() => {
 			exist.global = {};
@@ -147,7 +139,7 @@ async function resolveDeps(deps) {
 	log(`Installing ${installs.join(', ')} ...`);
 	let args = '';
 	if (options.dryRun) args += ' --dry-run';
-	if (options.global) args += ' --global';
+	if (opts.global)    args += ' --global';
 	return exec(`npm install --no-save${args} ${installs.join(' ')}`).then(() => {
 		log(`Installation complete.`);
 		log(`All the dependencies have been resolved.`);

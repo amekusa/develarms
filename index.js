@@ -207,6 +207,12 @@ function merge(a, b, recursion = 4) {
 	return a;
 }
 
+function write(file, content) {
+	return dryRun(() => {
+		return fs.writeFileSync(file, content);
+	}, `write: '${file}'\n-----CONTENT-----\n${content}\n=======EOF=======`);
+}
+
 class Config {
 	constructor(file) {
 		this.file = file;
@@ -229,7 +235,7 @@ class Config {
 	save() {
 		this.sync();
 		try {
-			fs.writeFileSync(this.file, JSON.stringify(this.data, null, 2));
+			write(this.file, JSON.stringify(this.data, null, 2));
 		} catch (e) { error(e.message) }
 	}
 }

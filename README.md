@@ -4,7 +4,7 @@ Alternative `devDependencies` resolver
 [![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
 
 
-## Installation
+## INSTALLATION
 
 Local:
 ```sh
@@ -16,31 +16,58 @@ Global:
 npm i -g develarms
 ```
 
-## Usage Example
+## USAGE
 
-`package.json` :
+### Adding dependencies to your project
+```sh
+# example
+develarms i rollup mocha
+```
+
+The above command installs `rollup` and `mocha` packages by internally executing:
+
+```sh
+npm i --no-save rollup mocha
+```
+
+Thanks to `--no-save` option, this command doesn't affect `dependencies` nor `devDependencies` in your `package.json`. Instead, the command adds **`develarms`** property, and stores the installed packages info as its properties like this:
+
 ```json
+// package.json
 {
-  "name": "your-package",
+  "name": "my-project",
+  ...
   "develarms": {
-    "dependencies": {
-      "rollup": "^3.3.0",
-      "mocha": "*"
-    }
+    "rollup": "^3.28.0",
+    "mocha": "^10.2.0"
   }
 }
 ```
 
-Shell:
+### Installing dependencies
 ```sh
-develarms
+develarms i
 ```
 
-The command installs `rollup` and `mocha` with `--no-save` option so it won't affect `package.json` .
+This command installs all the packages (let's say "dependencies") listed in `develarms` property in your `package.json` in the same manner as `npm i` command with `dependencies/devDependencies` properties.
 
-The command is also aware of your *globally* installed packages and respects them. For this example, if you have already installed `mocha` globally, the command only installs `rollup` to save the disk space.
+The big difference from `npm i` command (and the sole purpose of this tool) is however, if you already have *globally* installed some of the dependencies on your machine, `develarms i` command **skips installing them** to save the storage space of your machine.
 
-## Commandline Options
+So, for example, if you have already installed recent version of `rollup` globally before, but have never installed `mocha`, and now ran:
+
+```sh
+develarms i rollup mocha
+```
+
+The command only installs `mocha`, skipping `rollup` which you already have on your machine.
+
+By default, `develarms i` command installs packages *locally*. You can change this behavior by passing `-g` option to force it install *globally*:
+
+```sh
+develarms i -g
+```
+
+### Other commands & options
 
 ```sh
 develarms --help
@@ -48,34 +75,18 @@ develarms --help
 
 ```sh
 Options:
-  --dry-run
-    Does not actually install the dependencies
-    * Aliases: -n, --dryRun
+  -V, --version                      output the version number
+  -c, --config <file>                Config file (default: "package.json")
+  -k, --config-key <key>             Key of config object (default: "develarms")
+  -n, --dry-run                      Does not actually perform the operation
+  -v, --verbose                      Output detailed messages for debug
+  -h, --help                         display help for command
 
-  --global
-    Installs the dependencies globally
-    * Alias:   -g
-
-  --config <file>
-    Specifies JSON file
-    * Default: package.json
-    * Alias:   -c
-
-  --config-key <key>
-    Specifies key of config object
-    * Default: develarms
-    * Alias:   --configKey
-```
-
-The `--global` option can be set in JSON as well.
-
-```json
-{
-  "develarms": {
-    "global": true,
-    "dependencies": {}
-  }
-}
+Commands:
+  list|ls [options]                  Lists dependencies
+  install|i [options] [packages...]  Installs dependencies
+  uninstall|rm <packages...>         Uninstalls dependencies
+  help [command]                     display help for command```
 ```
 
 ---

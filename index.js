@@ -181,6 +181,11 @@ function debug(...msg) {
 	if (options.verbose) console.debug(`[${grn('INFO')}]`, ...msg);
 }
 
+function dryRun(fn, ...msg) {
+	if (options.dryRun) console.debug(`[${ylw('DRYRUN')}]`, ...msg);
+	else return fn();
+}
+
 function log(...msg) {
 	console.log(...msg);
 }

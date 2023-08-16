@@ -167,39 +167,7 @@ async function uninstall(pkgs) {
 }
 
 
-// ---- utils -------- -
-
-function get(key, obj, def = undefined) {
-	if (key in obj) return obj[key];
-	obj[key] = def;
-	return def;
-}
-
-function dig(path, obj, opts = {}) {
-	path = path.split('.');
-	let i = 0;
-	let n = path.length - 1;
-	for (; i < n; i++) {
-		let key = path[i];
-		if (key in obj) {
-			if (i == n) {
-				if ('set' in opts) obj[key] = opts.set;
-				return obj[key];
-			}
-			if (typeof obj[key] != 'object') throw `unexpected object structure`;
-			obj = obj[key];
-			continue;
-		}
-		if ('makePath' in opts && opts.makePath) {
-			for (;; i++) {
-				obj[key] = {};
-				obj = obj[key];
-			}
-		}
-	}
-	obj[path[n]] = set;
-	return set;
-}
+// ---- Utils -------- *
 
 function error(...msg) {
 	console.error(`[${RED('ERROR')}]`, ...msg);
@@ -287,7 +255,7 @@ class Config {
 }
 
 
-// ---- color utils -------- -
+// ---- Color Utils -------- *
 
 const ESC = '\x1b[';
 const RST = `${ESC}0m`;

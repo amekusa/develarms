@@ -123,7 +123,7 @@ Commands:
   list|ls [options]                  Lists dependencies
   install|i [options] [packages...]  Installs dependencies
   uninstall|rm <packages...>         Uninstalls dependencies
-  help [command]                     display help for command```
+  help [command]                     display help for command
 ```
 
 ---

@@ -5,7 +5,7 @@
  * @author Satoshi Soma (https://github.com/amekusa)
  */
 
-import * as fs from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import process from 'node:process';
 import cp from 'node:child_process';
 import semver from 'semver';
@@ -210,7 +210,7 @@ function merge(a, b, recursion = 4) {
 
 function write(file, content) {
 	return dryRun(() => {
-		return fs.writeFileSync(file, content);
+		return writeFileSync(file, content);
 	}, `write: '${file}'\n-----CONTENT-----\n${content}\n=======EOF=======`);
 }
 
@@ -221,7 +221,7 @@ class Config {
 	}
 	load() {
 		let loaded; try {
-			loaded = JSON.parse(fs.readFileSync(this.file));
+			loaded = JSON.parse(readFileSync(this.file));
 		} catch (e) { error(e.message) }
 		this.data = loaded;
 		return this;

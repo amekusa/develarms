@@ -1,10 +1,47 @@
-# ![DEVELARMS](logo.png)
-Alternative `devDependencies` resolver
+# ![DevelArms](https://raw.githubusercontent.com/amekusa/develarms/master/logo.png)
+Alternative `devDependencies` resolver that doesn't waste disk space
 
 [![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
 
 
-## INSTALLATION
+## What's this?
+This is a CLI program to install/manage the development tools of your project, such as `rollup`, `mocha`, `gulp`, `jsdoc`, or whatsoever.
+
+## Why not just use `devDependencies` ?
+The tools like listed above should be installed/used as **global** packages, because they are just commandline utilities.<br>
+Assuming you are working on many projects that require these tools, it would be a huge waste of disk space if you install them as `devDependencies` of each project separately like this:
+
+```
+project1/
+└── node_modules/
+    ├── rollup@3.x.x
+    └── mocha@10.x.x
+project2/
+└── node_modules/
+    ├── rollup@3.x.x (duplicate)
+    └── gulp@4.x.x
+project3/
+└── node_modules/
+    ├── mocha@10.x.x (duplicate)
+    └── gulp@3.x.x
+```
+
+DevelArms can solve this problem to like this:
+
+```
+node_modules/ (global)
+├── rollup@3.x.x
+├── mocha@10.x.x
+└── gulp@4.x.x
+
+project1/
+project2/
+project3/
+└── node_modules/
+    └── gulp@3.x.x
+```
+
+## Installation
 
 Local:
 ```sh
@@ -16,7 +53,7 @@ Global:
 npm i -g develarms
 ```
 
-## USAGE
+## Usage
 
 ### Adding dependencies to your project
 ```sh

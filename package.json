@@ -2,11 +2,10 @@
   "type": "module",
   "name": "develarms",
   "version": "2.0.0",
-  "description": "Alternative devDependencies resolver",
+  "description": "Alternative devDependencies resolver that doesn't waste disk space",
   "main": "index.js",
   "files": [
-    "index.js",
-    "logo.png"
+    "index.js"
   ],
   "bin": {
     "develarms": "index.js"
@@ -15,6 +14,13 @@
     "type": "git",
     "url": "git+https://github.com/amekusa/develarms.git"
   },
+  "keywords": [
+    "cli",
+    "development",
+    "dependencies",
+    "devDependencies",
+    "global"
+  ],
   "author": "Satoshi Soma (https://github.com/amekusa)",
   "license": "ISC",
   "dependencies": {

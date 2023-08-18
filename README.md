@@ -141,7 +141,7 @@ Resulting `package.json`:
 {
   ...
   "globalDependencies": {
-	"mocha": "^10.2.0"
+    "mocha": "^10.2.0"
   }
 }
 ```

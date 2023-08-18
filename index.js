@@ -161,6 +161,7 @@ async function uninstall(pkgs) {
 		for (let item of uninstalls) {
 			if (item in deps) delete deps[item];
 		}
+		if (!Object.keys(deps).length) config.remove(options.configKey);
 		config.save();
 		log(`Uninstallation complete.`);
 	}).catch(error);
@@ -231,6 +232,14 @@ class Config {
 	}
 	get(key, fallback = undefined) {
 		return this.has(key) ? this.data[key] : fallback;
+	}
+	remove(key, fallback = undefined) {
+		let r = fallback;
+		if (this.has(key)) {
+			r = this.data[key];
+			delete this.data[key];
+		}
+		return r;
 	}
 	set(key, value) {
 		this.data[key] = value;

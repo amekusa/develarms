@@ -129,7 +129,7 @@ Commands:
 ## Usage examples
 
 ### Custom config key
-If you prefer more semantic name than `develarms` for property in `package.json`, it can be changed with `--config-key` or `-k` option, like this:
+If you prefer more semantic name than `develarms` for the property in `package.json`, it can be changed with `--config-key` or `-k` option, like this:
 
 ```sh
 develarms i mocha -k globalDependencies

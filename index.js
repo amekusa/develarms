@@ -11,7 +11,7 @@ import cp from 'node:child_process';
 import semver from 'semver';
 import { Command } from 'commander';
 
-const version = '2.0.1';
+const version = '2.1.0';
 
 let options = {
 	dryRun: false,

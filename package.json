@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "develarms",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Alternative devDependencies resolver that doesn't waste disk space",
   "main": "index.js",
   "files": [

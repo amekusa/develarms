@@ -88,10 +88,7 @@ async function install() {
 		let installs = {};
 		let tasks = [];
 		for (let i = 0; i < pkgs.length; i++) {
-			tasks.push(exec(`npm view --json ${pkgs[i]} name version`).then(resp => {
-				let data = JSON.parse(resp);
-				if (typeof data != 'object') throw `invalid response from npm`;
-				if (Array.isArray(data)) data = data[0];
+			tasks.push(pkgInfo(pkgs[i]).then(data => {
 				installs[data.name] = '^' + data.version;
 			}).catch(error));
 		}

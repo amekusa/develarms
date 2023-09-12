@@ -112,18 +112,19 @@ develarms --help
 
 ```sh
 Options:
-  -V, --version                      output the version number
-  -c, --config <file>                Config file (default: "package.json")
-  -k, --config-key <key>             Key of config object (default: "develarms")
-  -n, --dry-run                      Does not actually perform the operation
-  -v, --verbose                      Output detailed messages for debug
-  -h, --help                         display help for command
+  -V, --version                       output the version number
+  -c, --config <file>                 config file (default: "package.json")
+  -k, --config-key <key>              key of config object (default: "develarms")
+  -n, --dry-run                       do not actually perform the operation
+  -v, --verbose                       output detailed messages for debug
+  -h, --help                          display help for command
 
 Commands:
-  list|ls [options]                  Lists dependencies
-  install|i [options] [packages...]  Installs dependencies
-  uninstall|rm <packages...>         Uninstalls dependencies
-  help [command]                     display help for command
+  list|ls [options]                   list dependencies
+  install|i [options] [packages...]   install dependencies
+  uninstall|rm <packages...>          uninstall dependencies
+  upgrade|up [options] [packages...]  upgrade dependencies
+  help [command]                      display help for command
 ```
 
 ## Usage examples

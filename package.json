@@ -19,7 +19,10 @@
     "development",
     "dependencies",
     "devDependencies",
-    "global"
+    "global",
+    "globalDependencies",
+    "tooling",
+    "disk"
   ],
   "author": "Satoshi Soma (https://github.com/amekusa)",
   "license": "ISC",

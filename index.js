@@ -62,6 +62,7 @@ async function main() {
 		.action(uninstall);
 
 	app.command('upgrade')
+		.alias('up')
 		.alias('bump')
 		.description('Upgrades dependencies')
 		.argument('[packages...]', '(Optional) Packages to upgrade. If omitted, all the deps will be upgraded')

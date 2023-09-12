@@ -27,11 +27,11 @@ async function main() {
 
 	app.name('develarms')
 		.version(version)
-		.description('Alternative `devDependency` resolver')
-		.option('-c, --config <file>', 'Config file', 'package.json')
-		.option('-k, --config-key <key>', 'Key of config object', 'develarms')
-		.option('-n, --dry-run', 'Does not actually perform the operation')
-		.option('-v, --verbose', 'Output detailed messages for debug')
+		.description('Alternative `devDependencies` resolver')
+		.option('-c, --config <file>', 'config file', 'package.json')
+		.option('-k, --config-key <key>', 'key of config object', 'develarms')
+		.option('-n, --dry-run', 'do not actually perform the operation')
+		.option('-v, --verbose', 'output detailed messages for debug')
 		.hook('preAction', (app, cmd) => {
 			options = Object.assign(options, app.opts());
 			debug('options:', options);
@@ -43,30 +43,30 @@ async function main() {
 
 	app.command('list')
 		.alias('ls')
-		.description('Lists dependencies')
-		.option('--json', 'Outputs in JSON format')
+		.description('list dependencies')
+		.option('--json', 'output in JSON format')
 		.action(list);
 
 	app.command('install')
 		.alias('i')
 		.alias('add')
-		.description('Installs dependencies')
-		.argument('[packages...]', '(Optional) Packages to add to deps')
-		.option('-g, --global', 'Installs the packages globally')
+		.description('install dependencies')
+		.argument('[packages...]', '(optional) packages to add to deps')
+		.option('-g, --global', 'install globally')
 		.action(install);
 
 	app.command('uninstall')
 		.alias('rm')
-		.description('Uninstalls dependencies')
-		.argument('<packages...>', 'Packages to remove from deps')
+		.description('uninstall dependencies')
+		.argument('<packages...>', 'packages to remove from deps')
 		.action(uninstall);
 
 	app.command('upgrade')
 		.alias('up')
 		.alias('bump')
-		.description('Upgrades dependencies')
-		.argument('[packages...]', '(Optional) Packages to upgrade. If omitted, all the deps will be upgraded')
-		.addOption(new Option('-t, --target <target>', 'Which version the deps should upgrade to').choices(['major', 'minor', 'patch']).default('major'))
+		.description('upgrade dependencies')
+		.argument('[packages...]', '(optional) packages to upgrade. if omitted, all the deps will be upgraded')
+		.addOption(new Option('-t, --target <target>', 'which version the deps should upgrade to').choices(['major', 'minor', 'patch']).default('major'))
 		.action(upgrade);
 
 	await app.parseAsync();

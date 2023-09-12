@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import process from 'node:process';
 import cp from 'node:child_process';
 import semver from 'semver';
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 
 const version = '2.1.0';
 
@@ -60,6 +60,13 @@ async function main() {
 		.description('Uninstalls dependencies')
 		.argument('<packages...>', 'Packages to remove from deps')
 		.action(uninstall);
+
+	app.command('upgrade')
+		.alias('bump')
+		.description('Upgrades dependencies')
+		.argument('[packages...]', '(Optional) Packages to upgrade. If omitted, all the deps will be upgraded')
+		.addOption(new Option('-t, --target <target>', 'Which version the deps should upgrade to').choices(['major', 'minor', 'patch']).default('major'))
+		.action(upgrade);
 
 	await app.parseAsync();
 }
@@ -167,6 +174,39 @@ async function uninstall(pkgs) {
 	}).catch(error);
 }
 
+async function upgrade() {
+	let pkgs = this.args;
+	let opts = this.opts();
+
+	let deps = config.get(options.configKey, {});
+	let upgrades = {};
+	if (pkgs && pkgs.length) {
+		for (let i = 0; i < pkgs.length; i++) {
+			if (pkgs[i] in deps) upgrades[pkgs[i]] = deps[pkgs[i]];
+			else warn(`ignored '${pkgs[i]}' since it is not listed in the config`);
+		}
+	} else Object.assign(upgrades, deps);
+
+	let tasks = [];
+	for (let i in upgrades) {
+		let v = semver.coerce(upgrades[i]);
+		let suffix = '';
+		switch (opts.target) {
+			case 'minor': suffix = `@${v.major}`; break;
+			case 'patch': suffix = `@${v.major}.${v.minor}`; break;
+		}
+		tasks.push(pkgInfo(i + suffix).then(data => {
+			upgrades[i] = '^' + data.version;
+			log(`${i}: ${deps[i]} => ${upgrades[i]}`);
+		}).catch(error));
+	}
+	return Promise.all(tasks).then(() => {
+		config.sync().assign({ [options.configKey]: upgrades }).save();
+		log(`Upgraded the dependencies.`);
+		log(`Run 'develarms i' to install.`);
+	});
+}
+
 
 // ---- Utils -------- *
 
@@ -213,6 +253,15 @@ function write(file, content) {
 	return dryRun(() => {
 		return writeFileSync(file, content);
 	}, `write: '${file}'\n-----CONTENT-----\n${content}\n=======EOF=======`);
+}
+
+function pkgInfo(pkg, props = 'name version') {
+	return exec(`npm view --json ${pkg} ${props}`).then(resp => {
+		let data = JSON.parse(resp);
+		if (typeof data != 'object') throw `invalid response from npm`;
+		if (Array.isArray(data)) data = data[data.length - 1];
+		return data;
+	});
 }
 
 class Config {

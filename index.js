@@ -202,11 +202,11 @@ function exec(cmd) {
 	});
 }
 
-function merge(a, b, recursion = 4) {
-	if (recursion && a && typeof a == 'object' && b && typeof b == 'object') {
-		for (let key in b) a[key] = merge(a[key], b[key], recursion - 1);
-	} else return b;
-	return a;
+function merge(x, y, recurse = 8) {
+	if (recurse && x && y && typeof x == 'object' && typeof y == 'object' && !Array.isArray(x) && !Array.isArray(y)) {
+		for (let key in y) x[key] = merge(x[key], y[key], recurse - 1);
+	} else return y;
+	return x;
 }
 
 function write(file, content) {

@@ -295,7 +295,7 @@ class Config {
 		return this;
 	}
 	assign(data) {
-		this.data = merge(this.data, data, 4);
+		this.data = merge(this.data, data, 8);
 		return this;
 	}
 	sync() {

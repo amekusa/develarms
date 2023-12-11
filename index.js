@@ -53,6 +53,7 @@ async function main() {
 		.description('install dependencies')
 		.argument('[packages...]', '(optional) packages to add to deps')
 		.option('-g, --global', 'install globally')
+		.option('-F, --force', 'skip checking existing pkgs and install unconditionally')
 		.action(install);
 
 	app.command('uninstall')
@@ -103,21 +104,27 @@ async function install() {
 	log(`Resolving dependencies:`, deps, `...`);
 
 	// Populate existing packages
-	let exist = {}; await Promise.all([
-		// Locals
-		exec(`npm ls ${pkgs.join(' ')} --json --depth=0`).then(out => {
-			exist.local = JSON.parse(out).dependencies || {};
-		}).catch(() => {
-			exist.local = {};
-		}),
-		// Globals
-		exec(`npm ls -g ${pkgs.join(' ')} --json --depth=0`).then(out => {
-			exist.global = JSON.parse(out).dependencies || {};
-		}).catch(() => {
-			exist.global = {};
-		})
-	]);
-	log(`Existing dependencies:`, exist);
+	let exist = {};
+	if (opts.force) {
+		exist.local = {};
+		exist.global = {};
+	} else {
+		await Promise.all([
+			// Locals
+			exec(`npm ls ${pkgs.join(' ')} --json --depth=0`).then(out => {
+				exist.local = JSON.parse(out).dependencies || {};
+			}).catch(() => {
+				exist.local = {};
+			}),
+			// Globals
+			exec(`npm ls -g ${pkgs.join(' ')} --json --depth=0`).then(out => {
+				exist.global = JSON.parse(out).dependencies || {};
+			}).catch(() => {
+				exist.global = {};
+			})
+		]);
+		log(`Existing dependencies:`, exist);
+	}
 
 	// Calculate which packages should be installed
 	let installs = [];

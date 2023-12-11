@@ -4,10 +4,10 @@ Alternative `devDependencies` resolver that doesn't waste disk space
 [![npm package](https://img.shields.io/badge/dynamic/json?label=npm%0Apackage&query=%24%5B%27dist-tags%27%5D%5B%27latest%27%5D&url=https%3A%2F%2Fregistry.npmjs.org%2Fdevelarms%2F)](https://www.npmjs.com/package/develarms)
 
 
-## What's this?
+## Q. What's this?
 This is a CLI program to install/manage the development tools of your project, such as `rollup`, `mocha`, `c8`, `jsdoc`, or whatsoever.
 
-## Why not just use `devDependencies` ?
+## Q. Why not just use `devDependencies` ?
 The tools like listed above should be installed/used as **global** packages, because they are just commandline utilities.<br>
 Assuming you are working on many projects that require these tools, it would be a huge waste of disk space if you install them as `devDependencies` of each project separately like this:
 

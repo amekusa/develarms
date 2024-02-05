@@ -27,7 +27,7 @@
   "author": "Satoshi Soma (https://github.com/amekusa)",
   "license": "ISC",
   "dependencies": {
-    "commander": "^11.0.0",
+    "commander": "^12.0.0",
     "semver": "^7.5.4"
   }
 }
